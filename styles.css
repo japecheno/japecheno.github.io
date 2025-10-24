@@ -27,14 +27,17 @@ header {
 }
 
 .header-animated {
-    background: linear-gradient(270deg, #4facfe, #00f2fe, #8f7afe, #ff8a65);
-    background-size: 800% 800%;
-    animation: gradientShift 15s ease infinite;
-    color: #fff;
-    padding: 60px 20px;
+    /* Monochrome animated hero: light gray -> medium gray */
+    background: linear-gradient(270deg, #f3f3f3 0%, #d6d6d6 50%, #bdbdbd 100%);
+    background-size: 400% 400%;
+    animation: gradientShift 8s linear infinite;
+    color: #111; /* dark text for good contrast on gray backgrounds */
+    padding: 80px 20px; /* taller hero so movement is more visible */
     border-radius: 8px;
     margin-bottom: 30px;
     text-align: center;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+    will-change: background-position;
 }
 
 /* Keep animations accessible for users who prefer reduced motion */
@@ -85,7 +88,7 @@ h1, h2 {
 footer {
     text-align: center;
     padding: 20px;
-    background-color: #333;
+    background-color: #616161;
     color: white;
     margin-top: 40px;
 }
