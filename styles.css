@@ -27,8 +27,8 @@ header {
 }
 
 .header-animated {
-    /* Strict monochrome animated hero: light gray -> medium gray */
-    background: linear-gradient(270deg, #f3f3f3 0%, #87c2d1 100%);
+    /* Strict monochrome animated hero*/
+    background: linear-gradient(270deg, #f3f3f3 0%, #cce8ef 100%);
     background-size: 400% 400%;
     animation: gradientShift 8s linear infinite;
     color: #111; /* dark text for good contrast on gray backgrounds */
@@ -88,7 +88,7 @@ h1, h2 {
 footer {
     text-align: center;
     padding: 20px;
-    background-color: #616161;
+    background-color: #b4b4b4;
     color: white;
     margin-top: 40px;
 }
