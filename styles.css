@@ -27,8 +27,8 @@ header {
 }
 
 .header-animated {
-    /* Monochrome animated hero: light gray -> medium gray */
-    background: linear-gradient(270deg, #f3f3f3 0%, #d6d6d6 50%, #bdbdbd 100%);
+    /* Strict monochrome animated hero: light gray -> medium gray */
+    background: linear-gradient(270deg, #f3f3f3 0%, #bdbdbd 100%);
     background-size: 400% 400%;
     animation: gradientShift 8s linear infinite;
     color: #111; /* dark text for good contrast on gray backgrounds */
@@ -38,6 +38,8 @@ header {
     text-align: center;
     box-shadow: 0 6px 18px rgba(0,0,0,0.06);
     will-change: background-position;
+    /* ensure any children with color are desaturated */
+    filter: grayscale(100%);
 }
 
 /* Keep animations accessible for users who prefer reduced motion */
