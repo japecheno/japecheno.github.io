@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo List</title>
+    <link rel="stylesheet" href="todo.css">
+</head>
+<body>
+    <div class="todo-container">
+        <div class="todo-header">
+            <h1>Todo List</h1>
+        </div>
+
+        <div class="category-container">
+            <div class="category-header">
+                <h3>Categories</h3>
+                <form class="category-add-form" id="categoryForm">
+                    <input type="text" class="category-input" id="categoryInput" placeholder="New category..." required>
+                    <button type="submit" class="category-add-btn">Add Category</button>
+                </form>
+            </div>
+            <div class="category-filter" id="categoryFilter">
+                <button class="category-tag active" data-category="all">All</button>
+                <!-- Categories will be added here -->
+            </div>
+        </div>
+        
+        <form class="todo-form" id="todoForm">
+            <input type="text" class="todo-input" id="todoInput" placeholder="Add a new task..." required>
+            <select class="category-select" id="todoCategory">
+                <option value="">No Category</option>
+                <!-- Categories will be added here -->
+            </select>
+            <button type="submit" class="todo-add-btn">Add</button>
+        </form>
+
+        <ul class="todo-list" id="todoList">
+            <!-- Tasks will be added here -->
+        </ul>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const todoForm = document.getElementById('todoForm');
+            const categoryForm = document.getElementById('categoryForm');
+            const todoInput = document.getElementById('todoInput');
+            const categoryInput = document.getElementById('categoryInput');
+            const todoList = document.getElementById('todoList');
+            const categoryFilter = document.getElementById('categoryFilter');
+            const categorySelect = document.getElementById('todoCategory');
+            
+            let currentFilter = 'all';
+            
+            // Load categories from localStorage
+            const loadCategories = () => {
+                const categories = JSON.parse(localStorage.getItem('categories') || '[]');
+                updateCategoryUI(categories);
+                return categories;
+            };
+
+            // Save categories to localStorage
+            const saveCategories = (categories) => {
+                localStorage.setItem('categories', JSON.stringify(categories));
+                updateCategoryUI(categories);
+            };
+
+            // Update category UI elements
+            const updateCategoryUI = (categories) => {
+                // Update filter buttons
+                const filterHTML = ['<button class="category-tag active" data-category="all">All</button>']
+                    .concat(categories.map(cat => 
+                        `<button class="category-tag" data-category="${cat}">${cat}</button>`
+                    ));
+                categoryFilter.innerHTML = filterHTML.join('');
+
+                // Update category select
+                const selectHTML = ['<option value="">No Category</option>']
+                    .concat(categories.map(cat => 
+                        `<option value="${cat}">${cat}</option>`
+                    ));
+                categorySelect.innerHTML = selectHTML.join('');
+            };
+
+            // Load todos from localStorage
+            const loadTodos = () => {
+                const todos = JSON.parse(localStorage.getItem('todos') || '[]');
+                renderTodos(todos);
+            };
+
+            // Save todos to localStorage
+            const saveTodos = () => {
+                const todos = Array.from(todoList.children).map(item => ({
+                    text: item.querySelector('.todo-text').textContent,
+                    category: item.dataset.category || '',
+                    completed: item.classList.contains('completed')
+                }));
+                localStorage.setItem('todos', JSON.stringify(todos));
+            };
+
+            // Render todos based on current filter
+            const renderTodos = (todos) => {
+                const filteredTodos = currentFilter === 'all' 
+                    ? todos 
+                    : todos.filter(todo => todo.category === currentFilter);
+
+                todoList.innerHTML = filteredTodos.map(todo => `
+                    <li class="todo-item ${todo.completed ? 'completed' : ''}" data-category="${todo.category}">
+                        <input type="checkbox" class="todo-checkbox" ${todo.completed ? 'checked' : ''}>
+                        <span class="todo-text">${todo.text}</span>
+                        ${todo.category ? `<span class="category-label">${todo.category}</span>` : ''}
+                        <button class="todo-delete">×</button>
+                    </li>
+                `).join('');
+            };
+
+            // Add new category
+            categoryForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const categoryName = categoryInput.value.trim();
+                if (categoryName) {
+                    const categories = loadCategories();
+                    if (!categories.includes(categoryName)) {
+                        categories.push(categoryName);
+                        saveCategories(categories);
+                        categoryInput.value = '';
+                    }
+                }
+            });
+
+            // Add new todo
+            todoForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const text = todoInput.value.trim();
+                const category = categorySelect.value;
+                if (text) {
+                    const todos = JSON.parse(localStorage.getItem('todos') || '[]');
+                    todos.push({
+                        text,
+                        category,
+                        completed: false
+                    });
+                    localStorage.setItem('todos', JSON.stringify(todos));
+                    todoInput.value = '';
+                    renderTodos(todos);
+                }
+            });
+
+            // Handle checkbox, delete, and category filter
+            document.addEventListener('click', (e) => {
+                if (e.target.matches('.todo-checkbox')) {
+                    e.target.closest('.todo-item').classList.toggle('completed');
+                    saveTodos();
+                }
+                if (e.target.matches('.todo-delete')) {
+                    e.target.closest('.todo-item').remove();
+                    saveTodos();
+                }
+                if (e.target.matches('.category-tag')) {
+                    currentFilter = e.target.dataset.category;
+                    document.querySelectorAll('.category-tag').forEach(btn => 
+                        btn.classList.toggle('active', btn === e.target)
+                    );
+                    loadTodos();
+                }
+            });
+
+            // Initial load
+            loadCategories();
+            loadTodos();
+        });
+    </script>
+</body>
+</html>

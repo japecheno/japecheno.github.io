@@ -26,7 +26,7 @@
         <summary>About Me</summary>
           <h1>Hello! I'm Justin!</h1>
           <p>As a student studying computer science in downtown chicago, I look forward to learning more about tech and improving my skills.
-            <br>I don't come from a big background, just a person trying to figure out things a step at a time.
+            <br>Asian man.
           </p>
     </details>
 
@@ -62,7 +62,7 @@
             </div>
             <div class="project-box">
                 <h3>Project 3</h3>
-                <img src="https://via.placeholder.com/300x200" alt="Project 3>
+                <img src="https://via.placeholder.com/300x200" alt="Project 3">
                 <p>Project 3 description</p>
                 <div class="tech-stack">Technologies: NA</div>
             </div>
@@ -79,8 +79,49 @@
         </div>
     </section>
 
+    <div class="locked-section" id="lockedSection">
+        <div class="content-locked">
+            <h2>Private Todo List</h2>
+            <p>Enter password to access your todo list:</p>
+            <form class="lock-form" id="lockForm">
+                <input type="password" class="lock-input" id="passwordInput" placeholder="Enter password" required>
+                <button type="submit" class="lock-button">Unlock</button>
+            </form>
+        </div>
+        <div class="content-unlocked">
+            <iframe src="todo.html" style="width: 100%; height: 600px; border: none; border-radius: 8px;"></iframe>
+        </div>
+    </div>
+
     <footer>
         <p>&copy; 2025 Justin's Portfolio. All rights reserved.</p>
     </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const lockedSection = document.getElementById('lockedSection');
+            const lockForm = document.getElementById('lockForm');
+            const passwordInput = document.getElementById('passwordInput');
+            const correctPassword = '19Gray-Artist'; // Change this to your desired password
+
+            // Check if already unlocked in this session
+            if (sessionStorage.getItem('todoUnlocked') === 'true') {
+                lockedSection.classList.add('unlocked');
+            }
+
+            lockForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                if (passwordInput.value === correctPassword) {
+                    lockedSection.classList.add('unlocked');
+                    sessionStorage.setItem('todoUnlocked', 'true');
+                    passwordInput.value = '';
+                } else {
+                    alert('Incorrect password. Please try again.');
+                    passwordInput.value = '';
+                }
+            });
+        });
+    </script>
 </body>
 </html>
